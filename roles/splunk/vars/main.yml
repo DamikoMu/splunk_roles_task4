@@ -1,0 +1,4 @@
+splunk_url: 'https://download.splunk.com/products/splunk/releases/9.1.0.2/linux/splunk-9.1.0.2-b6436b649711-Linux-x86_64.tgz&wget=true'
+splunk_dest: '/tmp/splunk-9.1.0.tgz'
+splunk_install_dir: '/opt/splunk'
+splunk_user: 'kenesary6924'

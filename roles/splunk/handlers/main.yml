@@ -1,0 +1,7 @@
+---
+- name: restart splunk
+  become: yes
+  become_user: "{{ splunk_user }}"
+  command:
+    cmd: "{{ splunk_install_dir }}/bin/splunk restart"
+    warn: no

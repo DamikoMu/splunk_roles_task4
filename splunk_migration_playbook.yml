@@ -1,0 +1,40 @@
+---
+- name: Migrate Splunk Data
+  hosts: target_machine_hostname
+  become: yes
+  vars:
+    splunk_install_dir: '/opt/splunk'
+    splunk_user: 'splunk'
+    source_machine_hostname: 'your_source_machine_name_or_ip'
+
+  tasks:
+    - name: Stop Splunk on the source machine
+      command: "{{ splunk_install_dir }}/bin/splunk stop"
+      delegate_to: "{{ source_machine_hostname }}"
+      become: yes
+      become_user: "{{ splunk_user }}"
+
+    - name: Ensure rsync is installed
+      apt:
+        name: rsync
+        state: present
+
+    - name: Transfer Splunk indexed data
+      synchronize:
+        src: "{{ splunk_install_dir }}/var/lib/splunk/"
+        dest: "{{ splunk_install_dir }}/var/lib/splunk/"
+        mode: pull
+        delegate_to: "{{ source_machine_hostname }}"
+      become: yes
+      become_user: "{{ splunk_user }}"
+
+    - name: Start Splunk on the source machine
+      command: "{{ splunk_install_dir }}/bin/splunk start"
+      delegate_to: "{{ source_machine_hostname }}"
+      become: yes
+      become_user: "{{ splunk_user }}"
+
+    - name: Ensure Splunk is started on the target machine
+      command: "{{ splunk_install_dir }}/bin/splunk start"
+      become: yes
+      become_user: "{{ splunk_user }}"

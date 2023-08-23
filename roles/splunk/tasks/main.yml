@@ -1,0 +1,52 @@
+---
+- name: Download Splunk
+  get_url:
+    url: "{{ splunk_url }}"
+    dest: "{{ splunk_dest }}"
+    mode: '0755'
+  when: not (splunk_dest is exists)
+
+- name: Extract Splunk
+  unarchive:
+    src: "{{ splunk_dest }}"
+    dest: '/opt'
+    remote_src: yes
+    creates: "{{ splunk_install_dir }}/bin/splunk"
+
+- name: Create Splunk user
+  user:
+    name: "{{ splunk_user }}"
+    system: yes
+    state: present
+  when: splunk_user not in ansible_facts.users
+
+- name: Change Splunk directory owner
+  file:
+    path: "{{ splunk_install_dir }}"
+    owner: "{{ splunk_user }}"
+    group: "{{ splunk_user }}"
+    recurse: yes
+
+- name: Start Splunk for the first time with acceptance of license
+  command:
+    cmd: "{{ splunk_install_dir }}/bin/splunk start --accept-license"
+    creates: "{{ splunk_install_dir }}/ftr"
+  become_user: "{{ splunk_user }}"
+
+- name: Synchronize Splunk etc configurations
+  synchronize:
+    src: "{{ role_path }}/files/etc/"
+    dest: "{{ splunk_install_dir }}/"
+    delete: yes
+  become: yes
+  become_user: "{{ splunk_user }}"
+  notify: restart splunk
+
+- name: Copy 3rd party apps
+  copy:
+    src: "{{ role_path }}/files/etc/apps/"
+    dest: "{{ splunk_install_dir }}/etc/apps/"
+    owner: "{{ splunk_user }}"
+    group: "{{ splunk_user }}"
+    directory_mode: '0755'
+  notify: restart splunk

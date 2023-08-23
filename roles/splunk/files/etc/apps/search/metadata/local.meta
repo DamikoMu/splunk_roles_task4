@@ -1,0 +1,9 @@
+[indexes/blocklist_test]
+owner = admin
+version = 9.1.0.2
+modtime = 1692694312.208714000
+
+[inputs/script%3A%2F%2F%24SPLUNK_HOME%2Fetc%2Fapps%2Fcustom_blocklistde%2Fbin%2Fblocklist_puller.py]
+owner = admin
+version = 9.1.0.2
+modtime = 1692694317.351418000

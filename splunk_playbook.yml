@@ -1,0 +1,7 @@
+---
+- name: Install and Configure Splunk
+  hosts: splunk_server_new
+  become: yes
+
+  roles:
+    - splunk

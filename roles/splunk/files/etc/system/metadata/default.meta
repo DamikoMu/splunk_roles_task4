@@ -1,0 +1,24 @@
+
+# System permissions
+
+[]
+access = read : [ * ], write : [ admin ]
+
+### VIEWSTATES: even normal users should be able to create shared viewstates
+
+[viewstates]
+access = read : [ * ], write : [ * ]
+
+### JSON Web Tokens: should only be readable/writable by admin
+
+[collections/JsonWebTokensV1]
+access = read : [ admin ], write : [ admin ]
+
+### Recently Viewed Knowledge Objects: every user should be able to read and write to this collection
+
+[collections/RecentlyViewedKO]
+access = read : [ * ], write : [ * ]
+
+### Per user search history records
+[collections/SearchHistory]
+access = read : [ * ], write : [ * ]
